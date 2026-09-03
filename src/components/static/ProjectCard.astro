@@ -1,0 +1,20 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, year, medium, coverImage, coverAlt, category } = project.data;
+---
+
+<article class="work-card" data-category={category}>
+  <a href={`/works/${project.id}`}>
+    <figure>
+      <img src={coverImage} alt={coverAlt} width="800" height="600" loading="lazy" />
+    </figure>
+    <h2>{title}, {year}</h2>
+    {medium && <p class="work-meta">{medium}</p>}
+  </a>
+</article>

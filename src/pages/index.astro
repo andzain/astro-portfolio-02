@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/static/ProjectCard.astro';
+import GalleryFilter from '../components/islands/GalleryFilter.svelte';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => (a.data.order ?? 0) - (b.data.order ?? 0) || b.data.year - a.data.year
+);
+
+const categories = [...new Set(projects.map((p) => p.data.category))];
+---
+
+<Layout title="Vahram Aghasyan — Works">
+  <h1 class="sr-only">Works</h1>
+  <GalleryFilter client:load categories={categories} />
+  <div class="works-grid">
+    {projects.map((project) => <ProjectCard project={project} />)}
+  </div>
+</Layout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

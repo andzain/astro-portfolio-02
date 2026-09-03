@@ -1,0 +1,78 @@
+---
+import { getEntry, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+const bio = await getEntry('info', 'bio');
+const BioContent = bio ? (await render(bio)).Content : null;
+---
+
+<Layout title="CV / Bio — Vahram Aghasyan" ogImage="/images/about/vahram-by-david.jpg">
+  <article class="about-page">
+    <header class="about-header">
+      <h1>CV / Bio</h1>
+      <a class="cv-link" href="/images/cv/cv-vahram-aghasyan.pdf" target="_blank" rel="noopener noreferrer">
+        View full CV as PDF ↗
+      </a>
+    </header>
+
+    <figure class="about-portrait">
+      <img src="/images/about/vahram-by-david.jpg" alt="Vahram Aghasyan in Dilijan, in the Impuls Factory" />
+      <figcaption>Vahram Aghasyan in Dilijan, in the Impuls Factory</figcaption>
+    </figure>
+
+    <div class="prose-section">
+      {BioContent && <BioContent />}
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .about-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+  }
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin: 0;
+  }
+  .cv-link {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+  }
+  .about-portrait {
+    margin: 0 0 var(--space-4);
+  }
+  .about-portrait img {
+    width: 100%;
+    max-width: 480px;
+  }
+  .about-portrait figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    font-style: italic;
+  }
+  .prose-section {
+    max-width: 65ch;
+    font-family: var(--font-serif);
+    line-height: 1.7;
+  }
+  .prose-section :global(h2) {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    margin-top: var(--space-4);
+  }
+</style>
