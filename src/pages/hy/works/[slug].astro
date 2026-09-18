@@ -1,9 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
-import WorkDetail from '../../components/templates/WorkDetail.astro';
+import WorkDetail from '../../../components/templates/WorkDetail.astro';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects', ({ id }) => id.startsWith('en/'));
+  const projects = await getCollection('projects', ({ id }) => id.startsWith('hy/'));
   return projects.map((project) => {
     const slug = project.id.split('/').slice(1).join('/');
     return {
@@ -15,4 +15,4 @@ export async function getStaticPaths() {
 
 const { project, slug } = Astro.props;
 ---
-<WorkDetail project={project} lang="en" slug={slug} />
+<WorkDetail project={project} lang="hy" slug={slug} />

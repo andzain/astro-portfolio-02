@@ -1,16 +1,22 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../../i18n/ui';
 
 interface Props {
   project: CollectionEntry<'projects'>;
+  lang: Lang;
 }
 
-const { project } = Astro.props;
+const { project, lang } = Astro.props;
 const { title, year, medium, coverImage, coverAlt, category } = project.data;
+
+// project.id is "en/day-one" or "hy/day-one" — strip the locale prefix for the slug
+const slug = project.id.split('/').slice(1).join('/');
+const prefix = lang === 'en' ? '' : '/hy';
 ---
 
 <article class="work-card" data-category={category}>
-  <a href={`/works/${project.id}`}>
+  <a href={`${prefix}/works/${slug}`}>
     <figure>
       <img src={coverImage} alt={coverAlt} width="800" height="600" loading="lazy" />
     </figure>

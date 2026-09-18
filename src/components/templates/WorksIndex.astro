@@ -1,0 +1,45 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../static/ProjectCard.astro';
+import GalleryFilter from '../islands/GalleryFilter.svelte';
+import { t, type Lang, type UiKey } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const altPath = lang === 'en' ? '/hy/' : '/';
+
+const allProjects = await getCollection('projects', ({ id }) => id.startsWith(`${lang}/`));
+const projects = allProjects.sort(
+  (a, b) => (a.data.order ?? 0) - (b.data.order ?? 0) || b.data.year - a.data.year
+);
+
+const categoryValues = [...new Set(projects.map((p) => p.data.category))];
+const categories = categoryValues.map((value) => ({
+  value,
+  label: t(lang, `category.${value}` as UiKey),
+}));
+
+const title = lang === 'en' ? 'Vahram Aghasyan — Works' : 'Վահրամ Աղասյան — Աշխատանքներ';
+---
+
+<Layout title={title} lang={lang} altPath={altPath}>
+  <h1 class="sr-only">{lang === 'en' ? 'Works' : 'Աշխատանքներ'}</h1>
+  <GalleryFilter client:load categories={categories} allLabel={t(lang, 'filter.all')} />
+  <div class="works-grid">
+    {projects.map((project) => <ProjectCard project={project} lang={lang} />)}
+  </div>
+</Layout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

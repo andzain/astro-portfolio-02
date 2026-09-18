@@ -1,5 +1,6 @@
 <script>
-  export let categories = [];
+  export let categories = []; // [{ value: 'installation', label: 'Installation' }, ...]
+  export let allLabel = 'All';
   let active = 'all';
 
   function setActive(cat) {
@@ -20,16 +21,16 @@
     aria-selected={active === 'all'}
     on:click={() => setActive('all')}
   >
-    All
+    {allLabel}
   </button>
   {#each categories as cat}
     <button
       role="tab"
-      class:active={active === cat}
-      aria-selected={active === cat}
-      on:click={() => setActive(cat)}
+      class:active={active === cat.value}
+      aria-selected={active === cat.value}
+      on:click={() => setActive(cat.value)}
     >
-      {cat}
+      {cat.label}
     </button>
   {/each}
 </div>

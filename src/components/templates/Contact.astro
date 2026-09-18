@@ -1,0 +1,107 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { t, type Lang } from '../../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const altPath = lang === 'en' ? '/hy/contact' : '/contact';
+---
+
+<Layout title={`${t(lang, 'contact.title')} — Vahram Aghasyan`} lang={lang} altPath={altPath}>
+  <h1>{t(lang, 'contact.title')}</h1>
+  <p class="contact-text">{t(lang, 'contact.intro')}</p>
+  <address>
+    <a href="mailto:vahramaghasyan@gmail.com">vahramaghasyan@gmail.com</a>
+  </address>
+
+  <form class="contact-form" name="contact" method="POST">
+    <div class="field">
+      <label for="fullName">{t(lang, 'contact.name')}</label>
+      <input id="fullName" name="fullName" type="text" required />
+    </div>
+    <div class="field">
+      <label for="email">{t(lang, 'contact.email')}</label>
+      <input id="email" name="email" type="email" required />
+    </div>
+    <div class="field">
+      <label for="message">{t(lang, 'contact.message')}</label>
+      <textarea id="message" name="message" rows="6" required></textarea>
+    </div>
+    <div class="field">
+      <label for="link">{t(lang, 'contact.link')}</label>
+      <input id="link" name="link" type="text" />
+    </div>
+    <button type="submit">{t(lang, 'contact.submit')}</button>
+  </form>
+</Layout>
+
+<style>
+  h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin-bottom: var(--space-2);
+  }
+  .contact-text {
+    max-width: 60ch;
+    color: var(--color-muted);
+    margin-bottom: var(--space-3);
+  }
+  address {
+    font-style: normal;
+    font-size: 1.1rem;
+    margin-bottom: var(--space-4);
+  }
+  address a {
+    color: var(--color-text);
+  }
+  .contact-form {
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+  }
+  input,
+  textarea {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    padding: 0.6rem 0.75rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+  }
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  button {
+    align-self: flex-start;
+    margin-top: var(--space-1);
+    padding: 0.6rem 1.5rem;
+    background: var(--color-text);
+    color: var(--color-bg);
+    border: none;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+  }
+  button:hover {
+    opacity: 0.85;
+  }
+</style>

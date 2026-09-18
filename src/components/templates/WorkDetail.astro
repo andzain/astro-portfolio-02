@@ -1,0 +1,89 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ImageViewerModal from '../islands/ImageViewerModal.svelte';
+import { t, type Lang } from '../../i18n/ui';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  lang: Lang;
+  slug: string;
+}
+
+const { project, lang, slug } = Astro.props;
+const { Content } = await render(project);
+const {
+  title,
+  year,
+  medium,
+  dimensions,
+  location,
+  collaborators,
+  coverImage,
+  coverAlt,
+  gallery,
+} = project.data;
+
+const altPath = lang === 'en' ? `/hy/works/${slug}` : `/works/${slug}`;
+---
+
+<Layout title={`${title} — Vahram Aghasyan`} ogImage={coverImage} lang={lang} altPath={altPath}>
+  <article class="work-detail">
+    <img src={coverImage} alt={coverAlt} class="work-hero" />
+
+    <header>
+      <h1>{title}, {year}</h1>
+      <dl class="work-facts">
+        {medium && (<><dt>{t(lang, 'work.medium')}</dt><dd>{medium}</dd></>)}
+        {dimensions && (<><dt>{t(lang, 'work.dimensions')}</dt><dd>{dimensions}</dd></>)}
+        {location && (<><dt>{t(lang, 'work.location')}</dt><dd>{location}</dd></>)}
+        {collaborators && collaborators.length > 0 && (
+          <><dt>{t(lang, 'work.collaborators')}</dt><dd>{collaborators.join(', ')}</dd></>
+        )}
+      </dl>
+    </header>
+
+    <div class="work-body">
+      <Content />
+    </div>
+
+    {gallery && gallery.length > 0 && (
+      <section class="work-gallery" aria-label="Additional images">
+        <ImageViewerModal client:visible images={gallery} />
+      </section>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .work-hero {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: cover;
+    margin-bottom: var(--space-3);
+  }
+  .work-detail h1 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.75rem;
+    margin-bottom: var(--space-2);
+  }
+  .work-facts {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 1rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin: 0 0 var(--space-3);
+  }
+  .work-facts dt { font-weight: 600; }
+  .work-body {
+    max-width: 65ch;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .work-gallery {
+    margin-top: var(--space-4);
+  }
+</style>

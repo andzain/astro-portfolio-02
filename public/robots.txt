@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://va.021920.xyz/sitemap-index.xml

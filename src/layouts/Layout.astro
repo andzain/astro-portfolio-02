@@ -1,41 +1,54 @@
 ---
+import { t, type Lang } from '../i18n/ui';
+
 interface Props {
   title: string;
   description?: string;
   ogImage?: string;
+  lang?: Lang;
+  altPath?: string;
 }
 
 const {
   title,
-  description = "Vahram Aghasyan — contemporary art, conceptual photography, and text installations.",
+  description,
   ogImage = "/images/og/default.jpg",
+  lang = 'en',
+  altPath = '/',
 } = Astro.props;
+
+const metaDescription = description ?? t(lang, 'site.description');
 
 import MobileNav from '../components/islands/MobileNav.svelte';
 import ThemeToggle from '../components/islands/ThemeToggle.svelte';
+import LanguageToggle from '../components/islands/LanguageToggle.svelte';
 import '../styles/global.css';
 
+const prefix = lang === 'en' ? '' : '/hy';
+
 const navLinks = [
-  { href: '/', label: 'Works' },
-  { href: '/about', label: 'CV / Bio' },
-  { href: '/contact', label: 'Contact' },
+  { href: `${prefix}/`, label: t(lang, 'nav.works') },
+  { href: `${prefix}/about`, label: t(lang, 'nav.about') },
+  { href: `${prefix}/contact`, label: t(lang, 'nav.contact') },
 ];
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
   <title>{title}</title>
-  <meta name="description" content={description} />
+  <meta name="description" content={metaDescription} />
   <link rel="canonical" href={Astro.url.href} />
+  <link rel="alternate" hreflang="en" href={lang === 'en' ? Astro.url.href : new URL(altPath, Astro.url).href} />
+  <link rel="alternate" hreflang="hy" href={lang === 'hy' ? Astro.url.href : new URL(altPath, Astro.url).href} />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
-  <meta property="og:description" content={description} />
+  <meta property="og:description" content={metaDescription} />
   <meta property="og:image" content={ogImage} />
   <meta name="twitter:card" content="summary_large_image" />
 
@@ -49,7 +62,7 @@ const navLinks = [
 <body>
   <header class="site-header">
     <div class="header-inner">
-      <a href="/" class="logo">Vahram Aghasyan</a>
+      <a href={`${prefix}/`} class="logo">Vahram Aghasyan</a>
 
       <nav class="nav-desktop" aria-label="Primary">
         <ul>
@@ -60,6 +73,7 @@ const navLinks = [
       </nav>
 
       <div class="header-controls">
+        <LanguageToggle lang={lang} altPath={altPath} />
         <ThemeToggle client:load />
         <MobileNav client:load links={navLinks} />
       </div>
@@ -72,9 +86,9 @@ const navLinks = [
 
   <footer class="site-footer">
     <div class="footer-inner">
-      <p>&copy; {new Date().getFullYear()} Vahram Aghasyan</p>
+      <p>&copy; {new Date().getFullYear()} Vahram Aghasyan — {t(lang, 'footer.rights')}</p>
       <ul class="footer-links">
-        <li><a href="/contact">Contact</a></li>
+        <li><a href={`${prefix}/contact`}>{t(lang, 'nav.contact')}</a></li>
         <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a></li>
       </ul>
     </div>
