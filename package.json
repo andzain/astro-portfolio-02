@@ -10,10 +10,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^7.2.7",
-    "svelte": "^5.56.6",
+    "@astrojs/sitemap": "^3.7.4",
     "@astrojs/svelte": "^9.0.1",
     "@tailwindcss/vite": "^4.1.0",
+    "astro": "^7.2.7",
+    "svelte": "^5.56.6",
     "tailwindcss": "^4.1.0"
   },
   "devDependencies": {
