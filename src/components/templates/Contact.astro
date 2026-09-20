@@ -1,42 +1,117 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import { t, type Lang } from '../../i18n/ui';
+import Layout from "../../layouts/Layout.astro";
+import { t, type Lang } from "../../i18n/ui";
 
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const altPath = lang === 'en' ? '/hy/contact' : '/contact';
+const altPath = lang === "en" ? "/hy/contact" : "/contact";
+
+// Replace with your real Formspree form ID (from formspree.io dashboard → your form → Integration)
+const FORMSPREE_ID = "xbljygbb";
 ---
 
-<Layout title={`${t(lang, 'contact.title')} — Vahram Aghasyan`} lang={lang} altPath={altPath}>
-  <h1>{t(lang, 'contact.title')}</h1>
-  <p class="contact-text">{t(lang, 'contact.intro')}</p>
+<Layout
+  title={`${t(lang, "contact.title")} — Vahram Aghasyan`}
+  lang={lang}
+  altPath={altPath}
+>
+  <h1>{t(lang, "contact.title")}</h1>
+  <p class="contact-text">{t(lang, "contact.intro")}</p>
   <address>
     <a href="mailto:vahramaghasyan@gmail.com">vahramaghasyan@gmail.com</a>
   </address>
 
-  <form class="contact-form" name="contact" method="POST">
+  <form
+    class="contact-form"
+    id="contact-form"
+    action={`https://formspree.io/f/${FORMSPREE_ID}`}
+    method="POST"
+  >
     <div class="field">
-      <label for="fullName">{t(lang, 'contact.name')}</label>
-      <input id="fullName" name="fullName" type="text" required />
+      <label for="fullName">{t(lang, "contact.name")}</label>
+      <input id="fullName" name="name" type="text" required />
     </div>
     <div class="field">
-      <label for="email">{t(lang, 'contact.email')}</label>
+      <label for="email">{t(lang, "contact.email")}</label>
       <input id="email" name="email" type="email" required />
     </div>
     <div class="field">
-      <label for="message">{t(lang, 'contact.message')}</label>
+      <label for="message">{t(lang, "contact.message")}</label>
       <textarea id="message" name="message" rows="6" required></textarea>
     </div>
     <div class="field">
-      <label for="link">{t(lang, 'contact.link')}</label>
+      <label for="link">{t(lang, "contact.link")}</label>
       <input id="link" name="link" type="text" />
     </div>
-    <button type="submit">{t(lang, 'contact.submit')}</button>
+
+    <!-- honeypot spam trap — Formspree ignores real submissions, bots fill it in -->
+    <input
+      type="text"
+      name="_gotcha"
+      style="display:none"
+      tabindex="-1"
+      autocomplete="off"
+    />
+
+    <button type="submit" id="contact-submit"
+      >{t(lang, "contact.submit")}</button
+    >
+    <p
+      class="contact-status"
+      id="contact-status"
+      role="status"
+      aria-live="polite"
+    >
+    </p>
   </form>
 </Layout>
+
+<script
+  define:vars={{
+    sendingText: t(lang, "contact.sending"),
+    submitText: t(lang, "contact.submit"),
+    successText: t(lang, "contact.success"),
+    errorText: t(lang, "contact.error"),
+  }}
+>
+  const form = document.getElementById("contact-form");
+  const button = document.getElementById("contact-submit");
+  const status = document.getElementById("contact-status");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    button.disabled = true;
+    button.textContent = sendingText;
+    status.textContent = "";
+    status.className = "contact-status";
+
+    try {
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+
+      if (response.ok) {
+        form.reset();
+        status.textContent = successText;
+        status.classList.add("is-success");
+      } else {
+        status.textContent = errorText;
+        status.classList.add("is-error");
+      }
+    } catch {
+      status.textContent = errorText;
+      status.classList.add("is-error");
+    } finally {
+      button.disabled = false;
+      button.textContent = submitText;
+    }
+  });
+</script>
 
 <style>
   h1 {
@@ -101,7 +176,21 @@ const altPath = lang === 'en' ? '/hy/contact' : '/contact';
     letter-spacing: 0.05em;
     cursor: pointer;
   }
-  button:hover {
+  button:hover:not(:disabled) {
     opacity: 0.85;
+  }
+  button:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+  .contact-status {
+    font-size: 0.85rem;
+    margin: 0;
+  }
+  .contact-status.is-success {
+    color: #2e7d32;
+  }
+  .contact-status.is-error {
+    color: #c62828;
   }
 </style>

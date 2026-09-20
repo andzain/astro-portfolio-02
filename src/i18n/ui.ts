@@ -24,6 +24,11 @@ export const ui = {
     "contact.message": "Message *",
     "contact.link": "Website / Instagram / other",
     "contact.submit": "Submit",
+    "contact.sending": "Sending…",
+    "contact.success":
+      "Thanks — your message has been sent. I'll get back to you soon.",
+    "contact.error":
+      "Something went wrong. Please try again, or email directly.",
     "work.medium": "Medium",
     "work.dimensions": "Dimensions",
     "work.location": "Location",
@@ -57,6 +62,11 @@ export const ui = {
     "contact.message": "Հաղորդագրություն *",
     "contact.link": "Կայք / Instagram / այլ",
     "contact.submit": "Ուղարկել",
+    "contact.sending": "Ուղարկվում է…",
+    "contact.success":
+      "Շնորհակալություն — ձեր հաղորդագրությունն ուղարկվել է։ Շուտով կպատասխանեմ։",
+    "contact.error":
+      "Ինչ-որ բան այն չէ։ Խնդրում ենք փորձել կրկին, կամ գրել ուղղակի էլ. փոստով։",
     "work.medium": "Միջոց",
     "work.dimensions": "Չափսեր",
     "work.location": "Վայր",
