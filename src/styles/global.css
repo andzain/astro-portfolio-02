@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
-/* Design tokens as plain CSS custom properties (not wired into Tailwind's
-   @theme, since this project styles by hand rather than with utility
-   classes). Add an @theme block here later if you start using Tailwind
-   utilities and want `bg-bg`, `text-accent`, etc. to work. */
+/* Design tokens as plain CSS custom properties */
 :root {
   --color-bg: #ffffff;
   --color-text: #111111;
@@ -11,8 +8,8 @@
   --color-border: #e5e5e5;
   --color-accent: #d4442e;
 
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: "Newsreader", Georgia, serif;
 
   --space-1: 0.5rem;
   --space-2: 1rem;
@@ -23,16 +20,20 @@
   --header-height: 4rem;
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
   --color-bg: #0d0d0d;
   --color-text: #f2f2f2;
   --color-muted: #999999;
   --color-border: #2a2a2a;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -40,10 +41,15 @@ body {
   color: var(--color-text);
   font-family: var(--font-sans);
   line-height: 1.5;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
-img { max-width: 100%; display: block; }
+img {
+  max-width: 100%;
+  display: block;
+}
 
 .site-header {
   position: sticky;
@@ -71,7 +77,9 @@ img { max-width: 100%; display: block; }
   text-decoration: none;
 }
 
-.nav-desktop { display: none; }
+.nav-desktop {
+  display: none;
+}
 
 .nav-desktop ul {
   display: flex;
@@ -96,7 +104,9 @@ img { max-width: 100%; display: block; }
 }
 
 @media (min-width: 768px) {
-  .nav-desktop { display: block; }
+  .nav-desktop {
+    display: block;
+  }
 }
 
 main {
@@ -130,9 +140,15 @@ main {
   padding: 0;
 }
 
-.footer-links a { color: var(--color-muted); text-decoration: none; }
+.footer-links a {
+  color: var(--color-muted);
+  text-decoration: none;
+}
 
-/* Works grid */
+/* =========================================
+   WORKS GRID & PREMIUM MICRO-INTERACTIONS (V2)
+   ========================================= */
+
 .works-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -140,35 +156,97 @@ main {
 }
 
 @media (min-width: 640px) {
-  .works-grid { grid-template-columns: repeat(2, 1fr); }
+  .works-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (min-width: 1024px) {
-  .works-grid { grid-template-columns: repeat(3, 1fr); }
+  .works-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.work-card a { text-decoration: none; color: inherit; }
+/* 1. THE CARD CONTAINER (Adds a subtle lift on hover) */
+.work-card {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
-.work-card figure { margin: 0; overflow: hidden; background: var(--color-border); }
+.work-card:hover {
+  transform: translateY(-4px); /* Lifts the whole card slightly */
+}
 
-.work-card img {
+.work-card a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* 2. THE IMAGE WRAPPER (Crucial: overflow hidden stops the zoom from bleeding out) */
+.work-card figure {
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-border);
+}
+
+/* 3. THE IMAGE (Strictly isolated zoom) */
+.work-card figure img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition:
+    transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    filter 0.6s ease;
+  will-change: transform;
 }
 
-.work-card a:hover img { transform: scale(1.03); }
+/* ✨ HOVER: Image zooms, but TEXT DOES NOT because it's outside the figure */
+.work-card:hover figure img {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
 
+/* 4. THE TITLE (Now much more visible) */
 .work-card h2 {
   font-family: var(--font-serif);
   font-weight: 400;
   font-size: 1.05rem;
   margin: var(--space-1) 0 0;
+  transition:
+    color 0.3s ease,
+    transform 0.4s ease;
 }
 
+/* ✨ HOVER: Title turns accent red and shifts slightly right */
+.work-card:hover h2 {
+  color: var(--color-accent); /* Uses your beautiful #d4442e red */
+  transform: translateX(4px);
+}
+
+/* 5. THE META TEXT */
 .work-card .work-meta {
   color: var(--color-muted);
   font-size: 0.85rem;
   margin-top: 0.15rem;
+  transition:
+    color 0.3s ease,
+    transform 0.4s ease;
+}
+
+/* ✨ HOVER: Meta text turns full color and shifts right with the title */
+.work-card:hover .work-meta {
+  color: var(--color-text);
+  transform: translateX(4px);
+}
+
+/* ♿ CRITICAL: Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .work-card,
+  .work-card figure img,
+  .work-card h2,
+  .work-card .work-meta {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }
