@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://va.021920.xyz",
+  site: "https://021920.xyz",
   i18n: {
     defaultLocale: "en",
     locales: ["en", "hy"],
