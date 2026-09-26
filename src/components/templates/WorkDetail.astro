@@ -1,11 +1,12 @@
 ---
-import { render, type CollectionEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import ImageViewerModal from '../islands/ImageViewerModal.svelte';
-import { t, type Lang } from '../../i18n/ui';
+import { Image } from "astro:assets";
+import { render, type CollectionEntry } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import ImageViewerModal from "../islands/ImageViewerModal.svelte";
+import { t, type Lang } from "../../i18n/ui";
 
 interface Props {
-  project: CollectionEntry<'projects'>;
+  project: CollectionEntry<"projects">;
   lang: Lang;
   slug: string;
 }
@@ -21,25 +22,114 @@ const {
   collaborators,
   coverImage,
   coverAlt,
-  gallery,
+  category,
 } = project.data;
+const { gallery } = project.data;
 
-const altPath = lang === 'en' ? `/hy/works/${slug}` : `/works/${slug}`;
+const altPath = lang === "en" ? `/hy/works/${slug}` : `/works/${slug}`;
+
+const siteUrl = "https://021920.xyz";
+const categoryLabel = category.charAt(0).toUpperCase() + category.slice(1);
+
+const visualArtworkSchema = {
+  "@context": "https://schema.org",
+  "@type": "VisualArtwork",
+  name: title,
+  image: `${siteUrl}${coverImage}`,
+  url: `${siteUrl}${altPath === `/hy/works/${slug}` ? `/works/${slug}` : altPath}`,
+  dateCreated: String(year),
+  artform: categoryLabel,
+  ...(medium ? { artMedium: medium } : {}),
+  ...(location
+    ? { locationCreated: { "@type": "Place", name: location } }
+    : {}),
+  ...(dimensions
+    ? {
+        additionalProperty: {
+          "@type": "PropertyValue",
+          name: "Dimensions",
+          value: dimensions,
+        },
+      }
+    : {}),
+  creator: {
+    "@type": "Person",
+    name: "Vahram Aghasyan",
+    url: siteUrl,
+  },
+  ...(collaborators && collaborators.length > 0
+    ? {
+        contributor: collaborators.map((name) => ({ "@type": "Person", name })),
+      }
+    : {}),
+  inLanguage: lang,
+};
 ---
 
-<Layout title={`${title} — Vahram Aghasyan`} ogImage={coverImage} lang={lang} altPath={altPath}>
+<Layout
+  title={`${title} — Vahram Aghasyan`}
+  ogImage={coverImage}
+  lang={lang}
+  altPath={altPath}
+>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(visualArtworkSchema)}
+  />
+
   <article class="work-detail">
-    <img src={coverImage} alt={coverAlt} class="work-hero" />
+    <Image
+      src={coverImage}
+      alt={coverAlt}
+      width="1600"
+      height="1200"
+      class="work-hero"
+      loading="eager"
+    />
 
     <header>
       <h1>{title}, {year}</h1>
       <dl class="work-facts">
-        {medium && (<><dt>{t(lang, 'work.medium')}</dt><dd>{medium}</dd></>)}
-        {dimensions && (<><dt>{t(lang, 'work.dimensions')}</dt><dd>{dimensions}</dd></>)}
-        {location && (<><dt>{t(lang, 'work.location')}</dt><dd>{location}</dd></>)}
-        {collaborators && collaborators.length > 0 && (
-          <><dt>{t(lang, 'work.collaborators')}</dt><dd>{collaborators.join(', ')}</dd></>
-        )}
+        {
+          medium && (
+            <>
+              <>
+                <dt>{t(lang, "work.medium")}</dt>
+                <dd>{medium}</dd>
+              </>
+            </>
+          )
+        }
+        {
+          dimensions && (
+            <>
+              <>
+                <dt>{t(lang, "work.dimensions")}</dt>
+                <dd>{dimensions}</dd>
+              </>
+            </>
+          )
+        }
+        {
+          location && (
+            <>
+              <>
+                <dt>{t(lang, "work.location")}</dt>
+                <dd>{location}</dd>
+              </>
+            </>
+          )
+        }
+        {
+          collaborators && collaborators.length > 0 && (
+            <>
+              <>
+                <dt>{t(lang, "work.collaborators")}</dt>
+                <dd>{collaborators.join(", ")}</dd>
+              </>
+            </>
+          )
+        }
       </dl>
     </header>
 
@@ -47,11 +137,13 @@ const altPath = lang === 'en' ? `/hy/works/${slug}` : `/works/${slug}`;
       <Content />
     </div>
 
-    {gallery && gallery.length > 0 && (
-      <section class="work-gallery" aria-label="Additional images">
-        <ImageViewerModal client:visible images={gallery} />
-      </section>
-    )}
+    {
+      gallery && gallery.length > 0 && (
+        <section class="work-gallery" aria-label="Additional images">
+          <ImageViewerModal client:visible images={gallery} />
+        </section>
+      )
+    }
   </article>
 </Layout>
 
@@ -76,7 +168,9 @@ const altPath = lang === 'en' ? `/hy/works/${slug}` : `/works/${slug}`;
     color: var(--color-muted);
     margin: 0 0 var(--space-3);
   }
-  .work-facts dt { font-weight: 600; }
+  .work-facts dt {
+    font-weight: 600;
+  }
   .work-body {
     max-width: 65ch;
     font-family: var(--font-serif);

@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { getEntry, render } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import { t, type Lang } from "../../i18n/ui";
@@ -34,9 +35,11 @@ const BioContent = bio ? (await render(bio)).Content : null;
     </header>
 
     <figure class="about-portrait">
-      <img
+      <Image
         src="/images/about/vahram-by-david.jpg"
         alt={t(lang, "about.portraitCaption")}
+        width="800"
+        height="1000"
       />
       <figcaption>{t(lang, "about.portraitCaption")}</figcaption>
     </figure>

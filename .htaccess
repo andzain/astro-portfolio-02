@@ -1,0 +1,44 @@
+# =========================================
+
+# SECURITY HEADERS FOR ASTRO STATIC SITE
+
+# =========================================
+
+<IfModule mod_headers.c>
+    # Prevent browsers from MIME-sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # Prevent clickjacking (stops others from embedding your site in an iframe)
+    Header always set X-Frame-Options "DENY"
+
+    # Control referrer information
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Disable access to device features
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+
+    # Enforce HTTPS (HSTS) - *Only use this if your site is 100% HTTPS and you don't plan to revert to HTTP*
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+</IfModule>
+
+# =========================================
+
+# OPTIONAL: CACHING FOR ASTRO ASSETS
+
+# =========================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    # Cache images and fonts for 1 year
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+
+    # Cache CSS and JS for 1 month (Astro hashes these, so it's safe)
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+
+</IfModule>
